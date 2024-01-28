@@ -3,26 +3,14 @@ project(test)
 
 set(CMAKE_CXX_STANDARD 20)
 
+include(FetchContent)
+FetchContent_Declare(
+    sfml
+    GIT_REPOSITORY https://github.com/SFML/SFML
+    GIT_TAG 2.6.0
+)
+FetchContent_MakeAvailable(sfml)
+
 add_executable(test src/main.cpp src/Engine.cpp headers/Engine.h src/Board.cpp headers/Board.h)
-
-
-
-include_directories(headers /usr/include f:/SFML/include)
-
-set(SFML_ROOT F:/SFML)
-set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake_modules")
-find_package(SFML REQUIRED system window graphics network audio)
-if (SFML_FOUND)
-    include_directories(${SFML_INCLUDE_DIR})
-    target_link_libraries(test ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
-endif()
-
-#file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
-
-# Copy dlls to build
-if(WIN32)
-    file(GLOB BINARY_DEP_DLLS "${SFML_INCLUDE_DIR}/../bin/*.dll")
-    file(COPY ${BINARY_DEP_DLLS} DESTINATION ${CMAKE_BINARY_DIR})
-    file(GLOB MINGW_DEP_DLLS "F:/MingWSFML/bin/*.dll")
-    file(COPY ${MINGW_DEP_DLLS} DESTINATION ${CMAKE_BINARY_DIR})
-endif()
+target_include_directories(${PROJECT_NAME} PRIVATE headers ${sfml_SOURCE_DIR}/include)
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-window sfml-graphics sfml-network sfml-audio)
